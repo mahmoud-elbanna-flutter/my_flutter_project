@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+const blue = Color(0xFF4059C1);
+
 void main() {
-  runApp(const CreativaApp());
+  runApp(const App());
 }
 
-class CreativaApp extends StatelessWidget {
-  const CreativaApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,34 +15,40 @@ class CreativaApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Creativa App',
       theme: ThemeData(
-        useMaterial3: false,
-        fontFamily: 'Arial',
+        primaryColor: blue,
         scaffoldBackgroundColor: const Color(0xFFF7F7FC),
-        primaryColor: const Color(0xFF4059C1),
       ),
-      home: const LoginScreen(),
+      home: const Login(),
     );
   }
 }
 
-// ==================== LOGIN SCREEN ====================
+// ================= LOGIN =================
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<Login> createState() => _LoginState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginState extends State<Login> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController idController = TextEditingController();
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    idController.dispose();
+    super.dispose();
+  }
+
   void submit() {
-    if (nameController.text.isEmpty || idController.text.isEmpty) {
+    if (nameController.text.trim().isEmpty ||
+        idController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter your name and Student ID'),
+          content: Text('Please enter Name and Student ID'),
         ),
       );
       return;
@@ -49,9 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => MainScreen(
+        builder: (context) => Main(
           name: nameController.text,
-          studentId: idController.text,
+          id: idController.text,
         ),
       ),
     );
@@ -62,192 +70,150 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              children: [
-                const SizedBox(height: 100),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: [
+              const SizedBox(height: 70),
 
-                const Text(
-                  'Creativa App',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF4059C1),
+              const Text(
+                'Creativa App',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: blue,
+                ),
+              ),
+
+              const SizedBox(height: 35),
+
+              ClipOval(
+                child: Image.asset(
+                  'assets/photo_2026-08-29_22-54-16.jpg',
+                  width: 140,
+                  height: 140,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              const SizedBox(height: 60),
+
+              TextField(
+                controller: nameController,
+                keyboardType: TextInputType.name,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  hintText: 'Name',
+                  prefixIcon: const Icon(
+                    Icons.person,
+                    color: blue,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 40),
+              const SizedBox(height: 15),
 
-                Container(
-                  width: 145,
-                  height: 145,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF4059C1),
-                    border: Border.all(
-                      color: const Color(0xFF4059C1),
-                      width: 4,
+              TextField(
+                controller: idController,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  hintText: 'Student ID',
+                  prefixIcon: const Icon(
+                    Icons.badge,
+                    color: blue,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.school,
-                      size: 70,
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 80),
-
-                buildTextField(
-                  controller: nameController,
-                  hint: 'Name',
-                  icon: Icons.person_outline,
-                ),
-
-                const SizedBox(height: 20),
-
-                buildTextField(
-                  controller: idController,
-                  hint: 'Student ID',
-                  icon: Icons.badge_outlined,
-                  keyboardType: TextInputType.number,
-                ),
-
-                const SizedBox(height: 45),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 68,
-                  child: ElevatedButton(
-                    onPressed: submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4059C1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Submit',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    TextInputType? keyboardType,
-  }) {
-    return Container(
-      height: 68,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          prefixIcon: Icon(
-            icon,
-            color: const Color(0xFF4059C1),
-            size: 30,
-          ),
-          hintText: hint,
-          hintStyle: const TextStyle(
-            fontSize: 20,
-            color: Colors.grey,
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 20),
         ),
       ),
     );
   }
 }
 
-// ==================== MAIN SCREEN ====================
+// ================= MAIN =================
 
-class MainScreen extends StatefulWidget {
+class Main extends StatefulWidget {
   final String name;
-  final String studentId;
+  final String id;
 
-  const MainScreen({
+  const Main({
     super.key,
     required this.name,
-    required this.studentId,
+    required this.id,
   });
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<Main> createState() => _MainState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
-
-  void changePage(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
+class _MainState extends State<Main> {
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
     final pages = [
-      HomeScreen(
-        name: widget.name,
-        studentId: widget.studentId,
-      ),
-      const CoursesScreen(),
-      ProfileScreen(
-        name: widget.name,
-        studentId: widget.studentId,
-      ),
+      Home(widget.name, widget.id),
+      const Courses(),
+      Profile(widget.name, widget.id),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4059C1),
-        elevation: 0,
+        backgroundColor: blue,
         centerTitle: true,
-        title: const Text(
-          'Creativa App',
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
+        title: const Text('Creativa App'),
       ),
 
-      drawer: AppDrawer(
-        name: widget.name,
-        studentId: widget.studentId,
-        onPageSelected: changePage,
-      ),
+      drawer: buildDrawer(),
 
-      body: pages[currentIndex],
+      body: pages[index],
 
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: changePage,
-        selectedItemColor: const Color(0xFF4059C1),
-        unselectedItemColor: Colors.grey,
-        backgroundColor: const Color(0xFFFCF9FF),
-        type: BottomNavigationBarType.fixed,
+        currentIndex: index,
+        selectedItemColor: blue,
+        onTap: (i) {
+          setState(() {
+            index = i;
+          });
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -265,19 +231,189 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
+  Widget buildDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: blue,
+            ),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person,
+                    size: 50,
+                    color: blue,
+                  ),
+                ),
+
+                const SizedBox(width: 15),
+
+                Text(
+                  '${widget.name}\nID: ${widget.id}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          drawerItem(
+            Icons.home,
+            'Home',
+                () {
+              Navigator.pop(context);
+              setState(() {
+                index = 0;
+              });
+            },
+          ),
+
+          drawerItem(
+            Icons.person,
+            'Profile',
+                () {
+              Navigator.pop(context);
+              setState(() {
+                index = 2;
+              });
+            },
+          ),
+
+          drawerItem(
+            Icons.school,
+            'Courses',
+                () {
+              Navigator.pop(context);
+              setState(() {
+                index = 1;
+              });
+            },
+          ),
+
+          drawerItem(
+            Icons.info,
+            'About',
+                () {
+              Navigator.pop(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const About(),
+                ),
+              );
+            },
+          ),
+
+          drawerItem(
+            Icons.settings,
+            'Settings',
+                () {
+              Navigator.pop(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Settings(),
+                ),
+              );
+            },
+          ),
+
+          const Divider(),
+
+          drawerItem(
+            Icons.logout,
+            'Logout',
+                () {
+              logout();
+            },
+            color: Colors.red,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget drawerItem(
+      IconData icon,
+      String title,
+      VoidCallback action, {
+        Color color = blue,
+      }) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: color,
+      ),
+      title: Text(title),
+      onTap: action,
+    );
+  }
+
+  void logout() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text(
+            'Are you sure you want to logout?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                      (route) => false,
+                );
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
-// ==================== HOME SCREEN ====================
+// ================= HOME =================
 
-class HomeScreen extends StatelessWidget {
+class Home extends StatelessWidget {
   final String name;
-  final String studentId;
+  final String id;
 
-  const HomeScreen({
-    super.key,
-    required this.name,
-    required this.studentId,
-  });
+  const Home(
+      this.name,
+      this.id, {
+        super.key,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -289,45 +425,27 @@ class HomeScreen extends StatelessWidget {
           const Text(
             'Welcome to Creativa App',
             style: TextStyle(
-              fontSize: 27,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
             ),
           ),
 
-          const SizedBox(height: 35),
+          const SizedBox(height: 30),
 
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(25),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFCF9FF),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 8,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Row(
+          card(
+            Row(
               children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF4059C1),
-                  ),
-                  child: const Icon(
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundColor: blue,
+                  child: Icon(
                     Icons.person,
                     color: Colors.white,
-                    size: 45,
+                    size: 40,
                   ),
                 ),
 
-                const SizedBox(width: 22),
+                const SizedBox(width: 20),
 
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,18 +453,16 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Hello, $name!',
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 8),
-
                     Text(
-                      'Student ID: $studentId',
+                      'Student ID: $id',
                       style: const TextStyle(
-                        fontSize: 18,
                         color: Colors.grey,
+                        fontSize: 16,
                       ),
                     ),
                   ],
@@ -355,15 +471,14 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
 
           const Text(
             'Use the menu or the bottom navigation bar to explore '
                 'your courses, profile, and more.',
             style: TextStyle(
-              fontSize: 18,
               color: Colors.grey,
-              height: 1.5,
+              fontSize: 17,
             ),
           ),
         ],
@@ -372,162 +487,118 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// ==================== COURSES SCREEN ====================
+// ================= COURSES =================
 
-class CoursesScreen extends StatelessWidget {
-  const CoursesScreen({super.key});
+class Courses extends StatelessWidget {
+  const Courses({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final courses = [
+      [
+        'Flutter Basics',
+        'Learn the fundamentals of building apps with Flutter.',
+        Icons.flutter_dash
+      ],
+      [
+        'Dart Programming',
+        'Understand the Dart language that powers Flutter.',
+        Icons.code
+      ],
+      [
+        'UI/UX Fundamentals',
+        'Learn how to design clean and user-friendly interfaces.',
+        Icons.design_services
+      ],
+      [
+        'Git & GitHub',
+        'Learn version control and how to collaborate on code.',
+        Icons.hub
+      ],
+    ];
+
     return ListView(
       padding: const EdgeInsets.all(28),
-      children: [
-        courseCard(
-          icon: Icons.flutter_dash,
-          title: 'Flutter Basics',
-          description:
-          'Learn the fundamentals of building apps with Flutter.',
-        ),
-
-        courseCard(
-          icon: Icons.code,
-          title: 'Dart Programming',
-          description:
-          'Understand the Dart language that powers Flutter.',
-        ),
-
-        courseCard(
-          icon: Icons.design_services,
-          title: 'UI/UX Fundamentals',
-          description:
-          'Learn how to design clean and user-friendly interfaces.',
-        ),
-
-        courseCard(
-          icon: Icons.hub,
-          title: 'Git & GitHub',
-          description:
-          'Learn version control and how to collaborate on code.',
-        ),
-      ],
-    );
-  }
-
-  Widget courseCard({
-    required IconData icon,
-    required String title,
-    required String description,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 25),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFCF9FF),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 65,
-            height: 65,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xFF4059C1),
-            ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 32,
-            ),
-          ),
-
-          const SizedBox(width: 20),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      children: courses.map((course) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: card(
+            Row(
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
+                CircleAvatar(
+                  radius: 32,
+                  backgroundColor: blue,
+                  child: Icon(
+                    course[2] as IconData,
+                    color: Colors.white,
                   ),
                 ),
 
-                const SizedBox(height: 7),
+                const SizedBox(width: 18),
 
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    color: Colors.grey,
-                    height: 1.3,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        course[0] as String,
+                        style: const TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      Text(
+                        course[1] as String,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      }).toList(),
     );
   }
 }
 
-// ==================== PROFILE SCREEN ====================
+// ================= PROFILE =================
 
-class ProfileScreen extends StatelessWidget {
+class Profile extends StatelessWidget {
   final String name;
-  final String studentId;
+  final String id;
 
-  const ProfileScreen({
-    super.key,
-    required this.name,
-    required this.studentId,
-  });
+  const Profile(
+      this.name,
+      this.id, {
+        super.key,
+      });
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(30),
       children: [
-        Container(
-          padding: const EdgeInsets.all(25),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFCF9FF),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 7,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
+        card(
+          Row(
             children: [
-              Container(
-                width: 140,
-                height: 140,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFF4059C1),
-                ),
-                child: const Icon(
+              const CircleAvatar(
+                radius: 65,
+                backgroundColor: blue,
+                child: Icon(
                   Icons.person,
                   color: Colors.white,
-                  size: 80,
+                  size: 70,
                 ),
               ),
 
-              const SizedBox(width: 25),
+              const SizedBox(width: 20),
 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,17 +606,14 @@ class ProfileScreen extends StatelessWidget {
                   Text(
                     name,
                     style: const TextStyle(
-                      fontSize: 25,
+                      fontSize: 23,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
-                  const SizedBox(height: 10),
-
                   Text(
-                    'ID: $studentId',
+                    'ID: $id',
                     style: const TextStyle(
-                      fontSize: 18,
                       color: Colors.grey,
                     ),
                   ),
@@ -555,83 +623,33 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 45),
+        const SizedBox(height: 35),
 
-        Container(
-          padding: const EdgeInsets.all(25),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFCF9FF),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.12),
-                blurRadius: 7,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
+        card(
+          Column(
             children: [
-              infoRow(
-                icon: Icons.person,
-                title: 'Name:',
-                value: name,
+              info(
+                Icons.person,
+                'Name:',
+                name,
               ),
 
-              const Divider(height: 30),
+              const Divider(),
 
-              infoRow(
-                icon: Icons.badge,
-                title: 'Student ID:',
-                value: studentId,
+              info(
+                Icons.badge,
+                'Student ID:',
+                id,
               ),
 
-              const Divider(height: 30),
+              const Divider(),
 
-              infoRow(
-                icon: Icons.school,
-                title: 'Organization:',
-                value: 'Creativa App',
+              info(
+                Icons.school,
+                'Organization:',
+                'Creativa App',
               ),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget infoRow({
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: const Color(0xFF4059C1),
-          size: 30,
-        ),
-
-        const SizedBox(width: 20),
-
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        const SizedBox(width: 5),
-
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.grey,
-            ),
           ),
         ),
       ],
@@ -639,179 +657,190 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// ==================== DRAWER ====================
+// ================= ABOUT =================
 
-class AppDrawer extends StatelessWidget {
-  final String name;
-  final String studentId;
-  final Function(int) onPageSelected;
-
-  const AppDrawer({
-    super.key,
-    required this.name,
-    required this.studentId,
-    required this.onPageSelected,
-  });
+class About extends StatelessWidget {
+  const About({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      width: MediaQuery.of(context).size.width * 0.78,
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 260,
-            color: const Color(0xFF4059C1),
-            padding: const EdgeInsets.only(
-              left: 25,
-              top: 65,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 90,
-                  height: 90,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    size: 55,
-                    color: Color(0xFF4059C1),
-                  ),
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('About'),
+        centerTitle: true,
+        backgroundColor: blue,
+      ),
 
-                const SizedBox(width: 22),
-
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Text(
-                      'ID: $studentId',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          drawerItem(
-            context,
-            icon: Icons.home,
-            title: 'Home',
-            index: 0,
-          ),
-
-          drawerItem(
-            context,
-            icon: Icons.person,
-            title: 'Profile',
-            index: 2,
-          ),
-
-          drawerItem(
-            context,
-            icon: Icons.school,
-            title: 'Courses',
-            index: 1,
-          ),
-
-          drawerItem(
-            context,
-            icon: Icons.info,
-            title: 'About',
-            index: -1,
-          ),
-
-          drawerItem(
-            context,
-            icon: Icons.settings,
-            title: 'Settings',
-            index: -1,
-          ),
-
-          const Divider(),
-
-          ListTile(
-            leading: const Icon(
-              Icons.logout,
-              color: Colors.red,
-              size: 30,
-            ),
-            title: const Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 19,
+      body: const Padding(
+        padding: EdgeInsets.all(30),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: blue,
+              child: Icon(
+                Icons.school,
+                color: Colors.white,
+                size: 45,
               ),
             ),
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-                    (route) => false,
-              );
+
+            SizedBox(height: 15),
+
+            Text(
+              'Creativa App',
+              style: TextStyle(
+                fontSize: 21,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 5),
+
+            Text(
+              'Learn Flutter step by step.',
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            Text(
+              'Creativa App is a place where beginners learn '
+                  'the fundamentals of mobile app development using '
+                  'Flutter and Dart. Our courses are designed to be '
+                  'simple, practical, and easy to follow, helping '
+                  'students build real projects from day one.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ================= SETTINGS =================
+
+class Settings extends StatefulWidget {
+  const Settings({super.key});
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  bool dark = false;
+  bool notifications = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+        centerTitle: true,
+        backgroundColor: blue,
+      ),
+
+      body: Column(
+        children: [
+          SwitchListTile(
+            secondary: const Icon(
+              Icons.dark_mode,
+              color: blue,
+            ),
+
+            title: const Text('Dark Mode'),
+
+            subtitle: const Text(
+              'Enable dark theme',
+            ),
+
+            value: dark,
+
+            activeThumbColor: blue,
+
+            onChanged: (value) {
+              setState(() {
+                dark = value;
+              });
+            },
+          ),
+
+          SwitchListTile(
+            secondary: const Icon(
+              Icons.notifications,
+              color: blue,
+            ),
+
+            title: const Text('Notifications'),
+
+            subtitle: const Text(
+              'Receive updates from the training center',
+            ),
+
+            value: notifications,
+
+            activeThumbColor: blue,
+
+            onChanged: (value) {
+              setState(() {
+                notifications = value;
+              });
             },
           ),
         ],
       ),
     );
   }
+}
 
-  Widget drawerItem(
-      BuildContext context, {
-        required IconData icon,
-        required String title,
-        required int index,
-      }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 25,
-        vertical: 5,
-      ),
-      leading: Icon(
-        icon,
-        color: const Color(0xFF4059C1),
-        size: 30,
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 19,
+// ================= CARD =================
+
+Widget card(Widget child) {
+  return Container(
+    padding: const EdgeInsets.all(20),
+
+    decoration: BoxDecoration(
+      color: const Color(0xFFFCF9FF),
+      borderRadius: BorderRadius.circular(18),
+
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: .12),
+          blurRadius: 7,
+          offset: const Offset(0, 4),
         ),
-      ),
-      onTap: () {
-        Navigator.pop(context);
+      ],
+    ),
 
-        if (index != -1) {
-          onPageSelected(index);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('$title page is not available yet'),
-            ),
-          );
-        }
-      },
-    );
-  }
+    child: child,
+  );
+}
+
+// ================= INFO =================
+
+Widget info(
+    IconData icon,
+    String title,
+    String value,
+    ) {
+  return ListTile(
+    leading: Icon(
+      icon,
+      color: blue,
+    ),
+
+    title: Text(
+      '$title $value',
+      style: const TextStyle(
+        fontSize: 16,
+      ),
+    ),
+  );
 }
